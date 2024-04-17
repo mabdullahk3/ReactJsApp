@@ -1,44 +1,37 @@
 pipeline {
-    agent any
+    agent 'windows'
 
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out code from GitHub repository...'
-                git branch: 'main',
-                    url: 'https://github.com/umerfaro/lab11-12'
+                // Checkout code from GitHub repository
+                git 'https://github.com/mabdullahk3/ReactJsApp'
             }
         }
-
         stage('Dependency Installation') {
             steps {
-                echo 'Installing dependencies for the project...'
+                // Install dependencies for frontend
                 bat 'npm install'
             }
         }
-
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
-                bat 'docker build -t my-reactjs-app:latest .'
+                // Build Docker image
+                bat 'docker build -t REASCTJSAPP .'
             }
         }
-
         stage('Run Docker Image') {
             steps {
-                echo 'Running Docker image...'
-                bat 'docker run -d -p 3000:3000 my-reactjs-app:latest'
+                // Run Docker container from the built image
+                bat 'docker run -d -p 3000:80 REASCTJSAPP'
             }
         }
-
         stage('Push Docker Image') {
             steps {
-                echo 'Pushing Docker image to Docker Hub...'
-                withCredentials([string(credentialsId: 'papa1122@', variable: 'DOCKER_PASSWORD')]) {
-                    bat 'docker login -u umer12314sr -p %DOCKER_PASSWORD%'
-                    bat 'docker tag my-reactjs-app:latest umer12314sr/my-reactjs-app:latest'
-                    bat 'docker push umer12314sr/my-reactjs-app:latest'
-                }
+                // Push Docker image to Docker Hub (assuming you have Docker Hub credentials configured)
+                bat 'docker login -u mabdullah12 -p abdullahk03'
+                bat 'docker tag REASCTJSAPP mabdullah12/REASCTJSAPP:latest'
+                bat 'docker push mabdullah12/REASCTJSAPP:latest'
             }
         }
     }
